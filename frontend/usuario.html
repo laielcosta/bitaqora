@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>BitáQorA - Usuario</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <div id="cabecera"></div>
+    <main id="contenidoUsuario" style="display: none;">
+        <h1>BitáQorA</h1>
+        <h2 id="saludoUsuario"></h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 80%; max-width: 800px;">
+            <a href="mis_tareas.html"><button>Mis tareas</button></a>
+            <a href="../registro_tareas.php"><button>Registrar nueva tarea</button></a>
+            <a href="mi_progreso.html"><button>Mi progreso</button></a>
+        </div>
+
+        <section style="margin-top: 40px; width: 80%; max-width: 800px;">
+            <h3>Tu actividad:</h3>
+            <ul style="width: 100%; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <li>Actividad reciente 1</li>
+                <li>Actividad reciente 2</li>
+                <li>Actividad reciente 3</li>
+                <li>Actividad reciente 4</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>BitáQorA © 2025</p>
+    </footer>
+
+    <script type="module" src="js/main.js"></script>
+
+</body>
+</html>
