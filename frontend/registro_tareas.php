@@ -1,0 +1,73 @@
+<?php
+require("../backend/auth.php");
+requireUser();
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Actividad - BitáQorA</title>
+    <link rel="stylesheet" href="./frontend/css/estilos.css">
+    <script src="https://cdn.jsdelivr.net/npm/easytimer.js@4.4.0/dist/easytimer.min.js"></script>
+    <style>
+        #mensaje { margin-top: 1rem; font-weight: 600; }
+        #cronometro { font-weight: bold; font-size: 1.2em; margin: 10px; }
+    </style>
+</head>
+<body>
+<?php include("header_usu.php"); ?>
+<div style="height: 70px;"></div>
+
+<div class="contenedor">
+    <h3>Registrar tarea</h3>
+    <form id="actividad-form" action="tareas_api.php" method="POST">
+        <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>">
+        <input type="hidden" name="fecha" value="<?php echo date('Y-m-d'); ?>">
+
+        <label for="proyecto">Proyecto:</label>
+        <select id="select_proyecto" name="id_proyecto" required></select>
+
+        <label for="tarea">Tarea:</label>
+        <select id="select_tarea" name="id_tarea" required></select>
+
+        <label for="descripcion">Descripción:</label>
+        <input type="text" name="descripcion" required>
+
+        <label for="etiquetas">Etiquetas:</label>
+        <div id="contenedor-etiquetas" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+
+
+        <label for="horas">Horas:</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="datetime-local" name="hora_inicio">
+            <input type="datetime-local" name="hora_fin">
+        </div>
+
+        <label for="duracion">Duración (cronómetro):</label>
+        <input type="time" name="duracion" id="horas_cronometro">
+
+        <div id="cronometro">00:00:00</div>
+        <button type="button" onclick="iniciarCronometro()">Iniciar</button>
+        <button type="button" onclick="detenerCronometro()">Pausar</button>
+        <button type="button" onclick="reiniciarCronometro()">Reiniciar</button>
+
+        <label for="comentarios">Comentarios:</label>
+        <input type="text" name="comentarios">
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <h3>Registros recientes</h3>
+    <div id="tabla-registros"></div>
+
+    <div id="mensaje"></div>
+</div>
+
+<footer>
+    <p>BitáQorA © 2025</p>
+</footer>
+
+<script type="module" src="./js/registro_tareas.js"></script>
+</body>
+</html>
