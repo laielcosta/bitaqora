@@ -1,0 +1,18 @@
+# Ignorar archivos temporales
+*.log
+*.tmp
+*.swp
+
+# Ignorar sistema de XAMPP
+htdocs/
+
+# Ignorar configuraciones locales
+.env
+config.php
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Carpeta de bases de datos locales (si tuvieras backups ahí)
+bd/
