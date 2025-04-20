@@ -20,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result->num_rows === 1) {
         $row = $result->fetch_assoc();
+
+        // Guardar datos en la sesión
         $_SESSION['usuario'] = $usuario;
         $_SESSION['id_usuario'] = $row['id_usuario'];
         $_SESSION['tipo'] = $row['tipo'];
@@ -28,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "success" => true,
             "autenticado" => true,
             "usuario" => $usuario,
-            "tipo" => $row['tipo']
+            "tipo" => $row['tipo'],
+            "id_usuario" => $row['id_usuario']
         ]);
     } else {
         echo json_encode([
@@ -41,11 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // GET: solo verificar si ya hay sesión activa
-if (isset($_SESSION['usuario']) && isset($_SESSION['tipo'])) {
+if (isset($_SESSION['usuario']) && isset($_SESSION['tipo']) && isset($_SESSION['id_usuario'])) {
     echo json_encode([
         "autenticado" => true,
         "usuario" => $_SESSION['usuario'],
-        "tipo" => $_SESSION['tipo']
+        "tipo" => $_SESSION['tipo'],
+        "id_usuario" => $_SESSION['id_usuario']
     ]);
 } else {
     echo json_encode(["autenticado" => false]);
