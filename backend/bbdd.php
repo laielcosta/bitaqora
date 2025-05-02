@@ -219,7 +219,7 @@ function crear_tabla_registro($con) {
         hora_inicio DATETIME DEFAULT NULL, 
         hora_fin DATETIME DEFAULT NULL,
         duracion TIME DEFAULT NULL,
-        fecha DATE NOT NULL,
+        fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         comentarios VARCHAR(255),
 
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),

@@ -76,6 +76,9 @@ function devolverDatos($con) {
     exit();
 }
 
+
+//----------------------Tabla de registros cargados
+
 function registrarActividad($con) {
     if (!isset($_SESSION['id_usuario'])) {
         responderError(401, "No autorizado");
@@ -90,22 +93,24 @@ function registrarActividad($con) {
     $hora_inicio = $_POST['hora_inicio'] ?? null;
     $hora_fin    = $_POST['hora_fin'] ?? null;
     $duracion    = $_POST['duracion'] ?? null;
-    $fecha       = $_POST['fecha'] ?? null;
     $comentarios = $_POST['comentarios'] ?? null;
 
-    if (!$tarea || !$proyecto || !$fecha) {
+    // ► Ya no se comprueba $fecha
+    if (!$tarea || !$proyecto) {
         responderError(400, "Datos incompletos");
     }
 
+    // ► Eliminamos la columna/placeholder de fecha
     $sql = "INSERT INTO registro (
-                id_usuario, proyecto, tarea, descripcion, 
-                hora_inicio, hora_fin, duracion, fecha, comentarios
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                id_usuario, proyecto, tarea, descripcion,
+                hora_inicio, hora_fin, duracion, comentarios
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $con->prepare($sql);
-    $stmt->bind_param("iiissssss", 
+    $stmt->bind_param(
+        "iiisssss",
         $id_usuario, $proyecto, $tarea, $descripcion,
-        $hora_inicio, $hora_fin, $duracion, $fecha, $comentarios
+        $hora_inicio, $hora_fin, $duracion, $comentarios
     );
 
     if ($stmt->execute()) {
@@ -126,12 +131,9 @@ function registrarActividad($con) {
         responderError(500, "Error al registrar actividad: " . $con->error);
     }
 
-    
-
     $stmt->close();
     exit();
 }
-//----------------------Tabla de registros cargados
 
 function devolverTablaRegistros($con) {
     if (!isset($_SESSION['id_usuario'])) {
@@ -164,7 +166,7 @@ function devolverTablaRegistros($con) {
             <td>{$row['fecha']}</td>
             <td>{$row['duracion']}</td>
             <td>
-                <button onclick=\"modificarRegistro({$row['id_registro']}, '{$row['descripcion']}')\">Modificar</button>
+                <button onclick=\"modificarRegistro({$row['id_registro']})\">Modificar</button>
                 <button onclick=\"borrarRegistro({$row['id_registro']})\">Borrar</button>
             </td>
         </tr>";

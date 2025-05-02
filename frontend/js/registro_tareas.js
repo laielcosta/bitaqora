@@ -2,13 +2,12 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    fetch('../backend/tareas_api.php')
-    
+    fetch('../backend/tareas_api.php', { credentials: 'include' })
         .then(response => response.json())
         .then(data => {
             console.log('RESPUESTA TEXTO PLANO:', data);
-            const selectProyecto = document.getElementById('select_proyecto');
-            const selectTarea = document.getElementById('select_tarea');
+            const selectProyecto     = document.getElementById('select_proyecto');
+            const selectTarea        = document.getElementById('select_tarea');
             const contenedorEtiquetas = document.getElementById('contenedor-etiquetas');
 
             data.proyectos.forEach(proyecto => {
@@ -27,45 +26,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
             data.etiquetas.forEach(etiqueta => {
                 const label = document.createElement('label');
-                label.innerHTML = `<input type="checkbox" name="etiquetas[]" value="${etiqueta.id_etiqueta}"> ${etiqueta.nombre}`;
+                label.innerHTML =
+                    `<input type="checkbox" name="etiquetas[]" value="${etiqueta.id_etiqueta}"> ${etiqueta.nombre}`;
                 contenedorEtiquetas.appendChild(label);
             });
-
         })
         .catch(error => {
             console.error('Error cargando datos:', error);
         });
 });
 
-// ---------------- POST de Registro de tarea-----------------------------
+// ---------------- POST de Registro de tarea -----------------------------
 
+document.getElementById("actividad-form").addEventListener("submit", function (e) {
+    e.preventDefault();   // evitar envío tradicional
 
-document.getElementById("actividad-form").addEventListener("submit", function(e) {
-    e.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
-
-    const form = document.getElementById("actividad-form");
+    const form     = document.getElementById("actividad-form");
     const formData = new FormData(form);
 
     fetch('../backend/tareas_api.php', {
         method: "POST",
         body: formData,
-        credentials: "include" // 👈 Importante: permite enviar la cookie de sesión
+        credentials: "include"   // enviar cookie de sesión
     })
-    .then(res => res.text())
-    .then(msg => {
-        console.log("Respuesta del servidor:", msg);
-        document.getElementById("mensaje").textContent = msg;
-    })
-    .catch(error => {
-        console.error("Error al registrar actividad:", error);
-        document.getElementById("mensaje").textContent = "Error al registrar actividad.";
-    });
+        .then(res => res.text())
+        .then(msg => {
+            console.log("Respuesta del servidor:", msg);
+            document.getElementById("mensaje").textContent = msg;
+
+            form.reset();        // limpiar formulario
+            cargarRegistros();   // refrescar tabla
+        })
+        .catch(error => {
+            console.error("Error al registrar actividad:", error);
+            document.getElementById("mensaje").textContent = "Error al registrar actividad.";
+        });
 });
 
-
-
 // ---------------- Cronómetro -----------------------------
-const timer = new easytimer.Timer();
+const timer      = new easytimer.Timer();
 const cronometro = document.getElementById("cronometro");
 
 function actualizarCronometro(t) {
@@ -76,19 +75,22 @@ function actualizarCronometro(t) {
     document.getElementById("horas_cronometro").value = `${hh}:${mm}:${ss}`;
 }
 
-timer.addEventListener("secondsUpdated", () => actualizarCronometro(timer.getTimeValues()));
+timer.addEventListener("secondsUpdated", () =>
+    actualizarCronometro(timer.getTimeValues())
+);
 
-function iniciarCronometro() { timer.start({ precision: "seconds" }); }
-function detenerCronometro() { timer.pause(); }
+function iniciarCronometro()  { timer.start({ precision: "seconds" }); }
+function detenerCronometro()  { timer.pause(); }
 function reiniciarCronometro() {
     timer.reset();
     cronometro.textContent = "00:00:00";
     document.getElementById("horas_cronometro").value = "00:00:00";
 }
 
+// ---------------- CRUD Registros -----------------------------
 
 function cargarRegistros() {
-    fetch('../backend/tareas_api.php?modo=tabla')
+    fetch('../backend/tareas_api.php?modo=tabla', { credentials: 'include' })
         .then(res => res.text())
         .then(html => {
             document.getElementById("tabla-registros").innerHTML = html;
@@ -103,13 +105,14 @@ function borrarRegistro(id) {
         fetch('../backend/tareas_api.php', {
             method: "DELETE",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "id=" + id
+            body: "id=" + id,
+            credentials: 'include'
         })
-        .then(res => res.text())
-        .then(msg => {
-            console.log(msg);
-            cargarRegistros();
-        });
+            .then(res => res.text())
+            .then(msg => {
+                console.log(msg);
+                cargarRegistros();
+            });
     }
 }
 
@@ -119,16 +122,17 @@ function modificarRegistro(id, actual) {
         fetch('../backend/tareas_api.php', {
             method: "PUT",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `id=${id}&descripcion=${encodeURIComponent(nueva)}`
+            body: `id=${id}&descripcion=${encodeURIComponent(nueva)}`,
+            credentials: 'include'
         })
-        .then(res => res.text())
-        .then(msg => {
-            console.log(msg);
-            cargarRegistros();
-        });
+            .then(res => res.text())
+            .then(msg => {
+                console.log(msg);
+                cargarRegistros();
+            });
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    cargarRegistros(); // al cargar la página
+    cargarRegistros();   // tabla inicial
 });

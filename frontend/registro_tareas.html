@@ -17,9 +17,7 @@
 <div class="contenedor">
     <h3>Registrar tarea</h3>
     <form id="actividad-form" action="tareas_api.php" method="POST">
-        <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>">
-        <input type="hidden" name="fecha" value="<?php echo date('Y-m-d'); ?>">
-
+        
         <label for="proyecto">Proyecto:</label>
         <select id="select_proyecto" name="id_proyecto" required></select>
 
