@@ -32,10 +32,11 @@
 
 
         <label for="horas">Horas:</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="datetime-local" name="hora_inicio">
-            <input type="datetime-local" name="hora_fin">
+        <div style="display:flex;gap:10px">
+        <input type="time" name="hora_inicio" step="1">
+        <input type="time" name="hora_fin"   step="1">
         </div>
+
 
         <label for="duracion">Duración (cronómetro):</label>
         <input type="time" name="duracion" id="horas_cronometro">

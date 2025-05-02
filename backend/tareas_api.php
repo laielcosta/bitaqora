@@ -92,7 +92,23 @@ function registrarActividad($con) {
     $descripcion = $_POST['descripcion'] ?? "Actividad registrada";
     $hora_inicio = $_POST['hora_inicio'] ?? null;
     $hora_fin    = $_POST['hora_fin'] ?? null;
-    $duracion    = $_POST['duracion'] ?? null;
+    //  convertir las horas vacías en null
+    $hora_inicio = $hora_inicio === '' ? null : $hora_inicio;
+    $hora_fin    = $hora_fin  === '' ? null : $hora_fin;
+
+    $duracion = null;
+    if ($hora_inicio && $hora_fin) {
+        $ini = new DateTime($hora_inicio);
+        $fin = new DateTime($hora_fin);
+        $diff = $ini->diff($fin);             // DateInterval
+        // formatear como HH:MM:SS  (puede durar >24 h)
+        $duracion = sprintf(
+            '%02d:%02d:%02d',
+            $diff->h + $diff->d * 24,         // días → horas
+            $diff->i,
+            $diff->s
+        );
+}
     $comentarios = $_POST['comentarios'] ?? null;
 
     // ► Ya no se comprueba $fecha
