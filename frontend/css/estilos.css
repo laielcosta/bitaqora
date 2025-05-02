@@ -1,143 +1,242 @@
+/* estilos_dev_v2.css
+   Estilos de desarrollo para BitáQorA (segunda versión)
+   Paleta: Teal 🟢 + Coral 🟠
+   Responsive, adaptativo y cubre header, sidebar, main, forms, tablas y footer
+*/
+
+/* ——— Reset básico ——— */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Helvetica', sans-serif;
-    background-color: #e8f0fe;
-    color: #333;
+  }
+  html {
+    font-size: 16px;
+  }
+  body {
+    font-family: 'Segoe UI', sans-serif;
     line-height: 1.5;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-h1, h2, h3 {
-    color: #2a2a2a;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-h1 {
-    font-size: 2.5em;
-    font-weight: bold;
-}
-
-h2 {
-    font-size: 1.8em;
-}
-
-h3 {
-    font-size: 1.4em;
-}
-
-a {
-    color: #1a73e8;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: #0056b3;
-}
-
-button {
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-input, select {
-    background-color: white;
     color: #333;
-    border: 2px solid #ccc;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 5px;
-    width: 250px;
-    transition: border-color 0.3s ease;
-}
-
-input:focus, select:focus {
-    border-color: #1a73e8;
-    outline: none;
-}
-
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-    text-align: center;
-}
-
-table th, table td {
-    padding: 15px;
-    border: 1px solid #ddd;
-}
-
-table th {
-    background-color: #1a73e8;
-    color: white;
-    font-size: 1.1em;
-}
-
-table tr:nth-child(even) {
-    background-color: #f1f1f1;
-}
-
-table tr:hover {
-    background-color: #e0e0e0;
-}
-
-form {
+    background: #f2f8f8;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* ——— Topbar ——— */
+  .topbar {
+    display: flex;
     align-items: center;
-    margin: 20px 0;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 500px;
-}
-
-form label {
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-footer {
-    background-color: #1a73e8;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    width: 100%;
+    justify-content: space-between;
+    background: #008080; /* teal */
+    color: #fff;
+    padding: 0.75rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  
+  .menu-toggle {
+    background: #fff;
+    color: #008080;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+  
+  .app-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  /* ——— Sidebar ——— */
+  .sidebar {
     position: fixed;
+    top: 3.75rem; /* altura topbar */
+    left: 0;
     bottom: 0;
-}
-
-footer a {
-    color: white;
+    width: 220px;
+    background: #fff;
+    border-right: 2px solid #e0f0f0;
+    padding: 1rem;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    z-index: 900;
+  }
+  
+  .sidebar:not(.visible) {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar .greeting {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #008080;
+  }
+  
+  .menu-list {
+    list-style: none;
+    margin-bottom: 2rem;
+  }
+  
+  .menu-list li + li {
+    margin-top: 0.75rem;
+  }
+  
+  .menu-list a {
     text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-footer a:hover {
-    color: #ddd;
-}
+    color: #008080;
+    font-weight: 500;
+  }
+  
+  .logout-btn {
+    width: 100%;
+    padding: 0.5rem;
+    background: #FF6F61; /* coral */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  /* ——— Contenido principal ——— */
+  .main-content {
+    margin-top: 1rem;
+    margin-left: 240px;
+    padding: 1rem;
+    flex: 1;
+    transition: margin-left 0.3s ease;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      top: 3.75rem;
+      width: 200px;
+    }
+    .main-content {
+      margin-left: 0;
+      padding: 0.75rem;
+    }
+  }
+  
+  /* ——— Contenedor general ——— */
+  .contenedor {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  /* ——— Tipografías ——— */
+  h1, h2, h3 {
+    margin-bottom: 0.75rem;
+    color: #005f5f;
+  }
+  
+  /* ——— Formularios ——— */
+  form label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 500;
+  }
+  
+  form input[type="text"],
+  form input[type="time"],
+  form input[type="date"],
+  form input[type="password"],
+  form select,
+  form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    border: 1px solid #ccd;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+  
+  form input:focus,
+  form select:focus,
+  form textarea:focus {
+    outline: none;
+    border-color: #008080;
+  }
+  
+  form button {
+    margin-top: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    background: #008080;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  form button:hover {
+    background: #006666;
+  }
+  
+  /* ——— Cronómetro ——— */
+  #cronometro {
+    font-size: 1.4rem;
+    text-align: center;
+    margin: 1rem 0;
+    color: #FF6F61;
+  }
+  
+  /* ——— Botones auxiliares ——— */
+  button[onclick] {
+    margin-right: 0.5rem;
+    background: #FF6F61;
+    color: #fff;
+  }
+  
+  button[onclick]:hover {
+    background: #e5554d;
+  }
+  
+  /* ——— Tablas ——— */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: #fff;
+  }
+  
+  table th,
+  table td {
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+  }
+  
+  table th {
+    background: #f0f8f8;
+  }
+  
+  /* ——— Mensaje de estado ——— */
+  #mensaje {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #FF6F61;
+  }
+  
+  /* ——— Footer ——— */
+  footer {
+    background: #008080;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+  }
+  
+  footer p {
+    margin: 0;
+  }
+  

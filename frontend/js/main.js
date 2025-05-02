@@ -72,6 +72,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+
+/*
 async function cargarHeaderEstatico(tipo, nombre) {
   const cabecera = document.getElementById('cabecera');
   if (!cabecera) return;
@@ -108,4 +110,4 @@ async function cargarHeaderEstatico(tipo, nombre) {
     });
   }
 }
-
+*/
