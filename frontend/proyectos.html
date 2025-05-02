@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Gestión de Proyectos – BitáQorA</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header id="header"></header>
+
+  <main class="contenedor">
+    <h1>Gestión de Proyectos</h1>
+
+    <section class="card">
+      <h2 id="form-title">Agregar Proyecto</h2>
+      <form id="proyecto-form">
+        <input type="hidden" name="id_proyecto" id="id_proyecto">
+        <label>Nombre      <input type="text"  id="nombre"       required></label>
+        <label>Descripción <input type="text"  id="descripcion"  required></label>
+        <label>Inicio      <input type="date"  id="fecha_inicio" required></label>
+        <label>Fin         <input type="date"  id="fecha_fin"></label>
+        <button type="submit">Guardar</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Proyectos</h2>
+      <div id="lista-proyectos"></div>
+    </section>
+  </main>
+
+  <script src="js/proyectos.js" defer></script>
+  <script type="module">
+    import { verificarSesion } from './js/verificar_sesion.js';
+    
+    verificarSesion().then(data => {
+        if (!data) return;
+        console.log(data.usuario);  // Muestra el nombre del usuario
+        console.log(data.tipo);
+    
+    });
+    </script>
+</body>
+</html>

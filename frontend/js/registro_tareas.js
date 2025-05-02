@@ -64,7 +64,8 @@ window.reiniciarCronometro = () => {
 
 // ---------------- CRUD Registros -----------------------------
 function cargarRegistros() {
-    fetch("../backend/tareas_api.php?modo=tabla", { credentials: "include" })
+    const url = `../backend/tareas_api.php?modo=tabla&_=${Date.now()}`;
+    fetch(url, { credentials:'include', cache:'no-store' })
         .then(r => r.text())
         .then(html => (document.getElementById("tabla-registros").innerHTML = html))
         .catch(err => console.error("Error al cargar registros:", err));

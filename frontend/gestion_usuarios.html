@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Gestión de Usuarios – BitáQorA</title>
+  <link rel="stylesheet" href="css/estilos.css"/>
+</head>
+<body>
+  <header id="header"></header>
+
+  <main class="contenedor">
+    <h1>Gestión de Usuarios</h1>
+
+    <section class="card">
+      <h2 id="form-title">Agregar Usuario</h2>
+      <form id="usuario-form">
+        <input type="hidden" id="id_usuario"/>
+        <label>Nombre de usuario
+          <input type="text" id="usuario" required/>
+        </label>
+        <label>Contraseña
+          <input type="password" id="clave" required/>
+        </label>
+        <label>Tipo
+          <select id="tipo">
+            <option value="0">Usuario estadar</option>
+            <option value="1">Administrador</option>
+          </select>
+        </label>
+        <button type="submit">Guardar</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Usuarios</h2>
+      <div id="lista-usuarios"></div>
+    </section>
+  </main>
+
+  <script src="js/gestion_usuarios.js" defer></script>
+</body>
+</html>

@@ -152,6 +152,11 @@ function registrarActividad($con) {
 }
 
 function devolverTablaRegistros($con) {
+
+    header('Content-Type: text/html; charset=UTF-8');
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Pragma: no-cache');
+    
     if (!isset($_SESSION['id_usuario'])) {
         responderError(401, "No autorizado");
     }
