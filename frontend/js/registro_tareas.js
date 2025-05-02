@@ -1,138 +1,106 @@
 // ---------------- GET proyectos y tareas -----------------------------
-
 document.addEventListener("DOMContentLoaded", () => {
-
-    fetch('../backend/tareas_api.php', { credentials: 'include' })
-        .then(response => response.json())
+    fetch("../backend/tareas_api.php", { credentials: "include" })
+        .then(r => r.json())
         .then(data => {
-            console.log('RESPUESTA TEXTO PLANO:', data);
-            const selectProyecto     = document.getElementById('select_proyecto');
-            const selectTarea        = document.getElementById('select_tarea');
-            const contenedorEtiquetas = document.getElementById('contenedor-etiquetas');
+            const selProyecto  = document.getElementById("select_proyecto");
+            const selTarea     = document.getElementById("select_tarea");
+            const contEtiq     = document.getElementById("contenedor-etiquetas");
 
-            data.proyectos.forEach(proyecto => {
-                const option = document.createElement('option');
-                option.value = proyecto.id_proyecto;
-                option.textContent = proyecto.nombre;
-                selectProyecto.appendChild(option);
-            });
+            data.proyectos.forEach(p =>
+                selProyecto.insertAdjacentHTML("beforeend",
+                    `<option value="${p.id_proyecto}">${p.nombre}</option>`));
 
-            data.tareas.forEach(tarea => {
-                const option = document.createElement('option');
-                option.value = tarea.id_tarea;
-                option.textContent = tarea.nombre;
-                selectTarea.appendChild(option);
-            });
+            data.tareas.forEach(t =>
+                selTarea.insertAdjacentHTML("beforeend",
+                    `<option value="${t.id_tarea}">${t.nombre}</option>`));
 
-            data.etiquetas.forEach(etiqueta => {
-                const label = document.createElement('label');
-                label.innerHTML =
-                    `<input type="checkbox" name="etiquetas[]" value="${etiqueta.id_etiqueta}"> ${etiqueta.nombre}`;
-                contenedorEtiquetas.appendChild(label);
-            });
+            data.etiquetas.forEach(e =>
+                contEtiq.insertAdjacentHTML("beforeend",
+                    `<label><input type="checkbox" name="etiquetas[]" value="${e.id_etiqueta}"> ${e.nombre}</label>`));
         })
-        .catch(error => {
-            console.error('Error cargando datos:', error);
-        });
+        .catch(err => console.error("Error cargando datos:", err));
 });
 
-// ---------------- POST de Registro de tarea -----------------------------
+// ---------------- POST de Registro -----------------------------
+document.getElementById("actividad-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
 
-document.getElementById("actividad-form").addEventListener("submit", function (e) {
-    e.preventDefault();   // evitar envío tradicional
-
-    const form     = document.getElementById("actividad-form");
-    const formData = new FormData(form);
-
-    fetch('../backend/tareas_api.php', {
+    fetch("../backend/tareas_api.php", {
         method: "POST",
         body: formData,
-        credentials: "include"   // enviar cookie de sesión
+        credentials: "include"
     })
-        .then(res => res.text())
+        .then(r => r.text())
         .then(msg => {
-            console.log("Respuesta del servidor:", msg);
             document.getElementById("mensaje").textContent = msg;
-
-            form.reset();        // limpiar formulario
-            cargarRegistros();   // refrescar tabla
+            e.target.reset();
+            cargarRegistros();
         })
-        .catch(error => {
-            console.error("Error al registrar actividad:", error);
-            document.getElementById("mensaje").textContent = "Error al registrar actividad.";
-        });
+        .catch(err => console.error("Error al registrar:", err));
 });
 
 // ---------------- Cronómetro -----------------------------
-const timer      = new easytimer.Timer();
+const timer = new easytimer.Timer();
 const cronometro = document.getElementById("cronometro");
 
-function actualizarCronometro(t) {
-    const hh = String(t.hours).padStart(2, '0');
-    const mm = String(t.minutes).padStart(2, '0');
-    const ss = String(t.seconds).padStart(2, '0');
+timer.addEventListener("secondsUpdated", () => {
+    const { hours, minutes, seconds } = timer.getTimeValues();
+    const hh = String(hours).padStart(2, "0");
+    const mm = String(minutes).padStart(2, "0");
+    const ss = String(seconds).padStart(2, "0");
     cronometro.textContent = `${hh}:${mm}:${ss}`;
     document.getElementById("horas_cronometro").value = `${hh}:${mm}:${ss}`;
-}
+});
 
-timer.addEventListener("secondsUpdated", () =>
-    actualizarCronometro(timer.getTimeValues())
-);
-
-function iniciarCronometro()  { timer.start({ precision: "seconds" }); }
-function detenerCronometro()  { timer.pause(); }
-function reiniciarCronometro() {
+window.iniciarCronometro   = () => timer.start({ precision: "seconds" });
+window.detenerCronometro   = () => timer.pause();
+window.reiniciarCronometro = () => {
     timer.reset();
     cronometro.textContent = "00:00:00";
     document.getElementById("horas_cronometro").value = "00:00:00";
-}
+};
 
 // ---------------- CRUD Registros -----------------------------
-
 function cargarRegistros() {
-    fetch('../backend/tareas_api.php?modo=tabla', { credentials: 'include' })
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("tabla-registros").innerHTML = html;
-        })
-        .catch(err => {
-            console.error("Error al cargar los registros:", err);
-        });
+    fetch("../backend/tareas_api.php?modo=tabla", { credentials: "include" })
+        .then(r => r.text())
+        .then(html => (document.getElementById("tabla-registros").innerHTML = html))
+        .catch(err => console.error("Error al cargar registros:", err));
 }
+window.cargarRegistros = cargarRegistros; // opcional
 
 function borrarRegistro(id) {
-    if (confirm("¿Seguro que deseas borrar este registro?")) {
-        fetch('../backend/tareas_api.php', {
-            method: "DELETE",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "id=" + id,
-            credentials: 'include'
-        })
-            .then(res => res.text())
-            .then(msg => {
-                console.log(msg);
-                cargarRegistros();
-            });
-    }
-}
+    if (!confirm("¿Seguro que deseas borrar este registro?")) return;
 
-function modificarRegistro(id, actual) {
-    const nueva = prompt("Nueva descripción:", actual);
-    if (nueva && nueva !== actual) {
-        fetch('../backend/tareas_api.php', {
-            method: "PUT",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `id=${id}&descripcion=${encodeURIComponent(nueva)}`,
-            credentials: 'include'
-        })
-            .then(res => res.text())
-            .then(msg => {
-                console.log(msg);
-                cargarRegistros();
-            });
-    }
+    fetch("../backend/tareas_api.php", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "id=" + id,
+        credentials: "include"
+    })
+        .then(r => r.text())
+        .then(() => cargarRegistros())
+        .catch(err => console.error("Error al borrar:", err));
 }
+window.borrarRegistro = borrarRegistro;   // 👈 fuera del cuerpo
 
-document.addEventListener("DOMContentLoaded", () => {
-    cargarRegistros();   // tabla inicial
-});
+function modificarRegistro(id) {
+    const nueva = prompt("Nueva descripción:");
+    if (!nueva) return;
+
+    fetch("../backend/tareas_api.php", {
+        method: "PUT",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `id=${id}&descripcion=${encodeURIComponent(nueva)}`,
+        credentials: "include"
+    })
+        .then(r => r.text())
+        .then(() => cargarRegistros())
+        .catch(err => console.error("Error al modificar:", err));
+}
+window.modificarRegistro = modificarRegistro;   // 👈 fuera del cuerpo
+
+// tabla inicial
+document.addEventListener("DOMContentLoaded", cargarRegistros);
