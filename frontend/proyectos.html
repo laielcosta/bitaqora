@@ -30,15 +30,5 @@
   </main>
   <script src="js/header-component.js" defer></script>
   <script src="js/proyectos.js" defer></script>
-  <script type="module">
-    import { verificarSesion } from './js/verificar_sesion.js';
-    
-    verificarSesion().then(data => {
-        if (!data) return;
-        console.log(data.usuario);  // Muestra el nombre del usuario
-        console.log(data.tipo);
-    
-    });
-    </script>
 </body>
 </html>

@@ -94,15 +94,20 @@ function crear_tabla_etiquetas($con) {
     }
 
     $result = mysqli_query($con, "CREATE TABLE IF NOT EXISTS etiquetas (
-    id_etiqueta INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL UNIQUE
+        id_etiqueta INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(100) NOT NULL UNIQUE
     );");
+
     if (!$result) {
         die("Error al crear la tabla etiquetas: " . mysqli_error($con));
     }
-    rellenar_etiquetas($con);
-}
 
+    // Solo insertar etiquetas si la tabla está vacía
+    $hayFilas = mysqli_query($con, "SELECT 1 FROM etiquetas LIMIT 1");
+    if (mysqli_num_rows($hayFilas) === 0) {
+        rellenar_etiquetas($con);
+    }
+}
 
 function rellenar_etiquetas($con) {
     $etiquetas = array(
@@ -128,6 +133,7 @@ function rellenar_etiquetas($con) {
 }
 
 
+
 // crear tabla registro_etiquetas ===========================================================================================================================
 
 function crear_tabla_registro_etiquetas($con) {
@@ -147,6 +153,7 @@ function crear_tabla_registro_etiquetas($con) {
     if (!$result) {
         die("Error al crear la tabla registro_etiquetas: " . mysqli_error($con));
     }
+    
 }
 
 // crear tabla proyectos ===========================================================================================================================
