@@ -49,11 +49,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Si estamos en otras páginas, verificar tipo y mostrar
     if (data.autenticado) {
       if (saludoAdmin && data.tipo == 1) {
-        await cargarHeaderEstatico(data.tipo, data.usuario);
         saludoAdmin.textContent = `¡Hola ${data.usuario}! ¿Qué quieres hacer hoy?`;
         contAdmin.style.display = 'block';
       } else if (saludoUsuario && data.tipo == 0) {
-        await cargarHeaderEstatico(data.tipo, data.usuario);
+       /* await cargarHeaderEstatico(data.tipo, data.usuario);*/
         saludoUsuario.textContent = `¡Hola ${data.usuario}! ¿Qué quieres hacer hoy?`;
         contUsuario.style.display = 'block';
       } else {

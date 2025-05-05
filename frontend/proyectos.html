@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-  <header id="header"></header>
+  <app-header admin-page></app-header>
 
   <main class="contenedor">
     <h1>Gestión de Proyectos</h1>
@@ -28,7 +28,7 @@
       <div id="lista-proyectos"></div>
     </section>
   </main>
-
+  <script src="js/header-component.js" defer></script>
   <script src="js/proyectos.js" defer></script>
   <script type="module">
     import { verificarSesion } from './js/verificar_sesion.js';
