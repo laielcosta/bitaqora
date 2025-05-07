@@ -18,7 +18,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['tipo'] != 1) {
 header('Content-Type: application/json');
 // Incluir y conectar a la base de datos
 include_once __DIR__ . '/bbdd.php';
-$conn = conectar();    // <<< Obtenemos la conexión llamando a la función
+$con = conectar();    // <<< Obtenemos la conexión llamando a la función
 
 // Permitir métodos HTTP desde el frontend
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -40,7 +40,7 @@ switch ($method) {
     case 'GET':
         // Listar todas las etiquetas
         $sql = "SELECT id_etiqueta AS id, nombre FROM etiquetas ORDER BY nombre";
-        $result = $conn->query($sql);
+        $result = $con->query($sql);
         $etiquetas = [];
         while ($row = $result->fetch_assoc()) {
             $etiquetas[] = $row;
@@ -56,7 +56,7 @@ switch ($method) {
             echo json_encode(['error' => 'Nombre de etiqueta requerido']);
             exit;
         }
-        $stmt = $conn->prepare("INSERT INTO etiquetas (nombre) VALUES (?)");
+        $stmt = $con->prepare("INSERT INTO etiquetas (nombre) VALUES (?)");
         $stmt->bind_param('s', $data['nombre']);
         if ($stmt->execute()) {
             $id = $stmt->insert_id;
@@ -78,7 +78,7 @@ switch ($method) {
             echo json_encode(['error' => 'ID y nombre requeridos']);
             exit;
         }
-        $stmt = $conn->prepare("UPDATE etiquetas SET nombre = ? WHERE id_etiqueta = ?");
+        $stmt = $con->prepare("UPDATE etiquetas SET nombre = ? WHERE id_etiqueta = ?");
         $stmt->bind_param('si', $data['nombre'], $data['id']);
         if ($stmt->execute()) {
             echo json_encode(['id' => $data['id'], 'nombre' => $data['nombre']]);
@@ -99,7 +99,7 @@ switch ($method) {
             echo json_encode(['error' => 'ID de etiqueta requerido']);
             exit;
         }
-        $stmt = $conn->prepare("DELETE FROM etiquetas WHERE id_etiqueta = ?");
+        $stmt = $con->prepare("DELETE FROM etiquetas WHERE id_etiqueta = ?");
         $stmt->bind_param('i', $data['id']);
         if ($stmt->execute()) {
             echo json_encode(['deleted' => $data['id']]);
@@ -115,4 +115,4 @@ switch ($method) {
         break;
 }
 
-$conn->close();
+$con->close();

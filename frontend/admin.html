@@ -1,72 +1,72 @@
+<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>BitáQorA - Admin</title>
-    <link rel="stylesheet" href="css/estilos.css">
+  <meta charset="UTF-8">
+  <title>BitáQorA - Admin</title>
+  <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-    <app-header admin-page></app-header>
-    <main id="contenidoAdmin" style="display: none;">
-        <h1>BitáQorA</h1>
-        <h2 id="saludoAdmin"></h2>
+  <app-header admin-page></app-header>
+  <main id="contenidoAdmin" style="display: none;">
+    <h1>BitáQorA</h1>
+    <h2 id="saludoAdmin"></h2>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 80%; max-width: 800px;">
-            <a href="ver_actividades.html"><button>Ver actividades</button></a>
-            <a href="proyectos.html"><button>Gestionar Proyectos</button></a>
-            <a href="gestion_usuarios.html"><button>Gestionar usuarios</button></a>
-            <a href="estadisticas.html"><button>Estadísticas y gráficos</button></a>
-            <button id="btn-etiquetas">Etiquetas</button>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;width:80%;max-width:800px;">
+      <a href="proyectos.html"><button>Gestionar Proyectos</button></a>
+      <a href="gestion_usuarios.html"><button>Gestionar Usuarios</button></a>
+      <a href="estadisticas.html"><button>Estadísticas y gráficos</button></a>
+      <button id="btn-etiquetas">Etiquetas</button>
+    </div>
 
-        </div>
+    <!-- GESTIÓN DE ETIQUETAS (sin cambios) -->
+    <section id="gestion-etiquetas" style="margin-top:40px;width:80%;max-width:800px;display:none;">
+      <h2>Gestión de Etiquetas</h2>
+      <form id="form-etiqueta" style="display:flex;gap:8px;margin-bottom:16px;">
+        <input type="text" id="nombre-etiqueta" placeholder="Nombre de etiqueta" required style="flex:1;">
+        <input type="hidden" id="etiqueta-id">
+        <button type="submit">Guardar</button>
+      </form>
+      <table id="tabla-etiquetas" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr><th>Nombre</th><th style="width:120px;">Acciones</th></tr>
+        </thead>
+        <tbody><!-- filas dinámicas --></tbody>
+      </table>
+    </section>
 
-                <!-- GESTIÓN DE ETIQUETAS: PONER JUSTO DESPUÉS DEL GRID DE BOTONES -->
-            <section id="gestion-etiquetas" style="margin-top: 40px; width: 80%; max-width: 800px; display: none;">   
-            <h2>Gestión de Etiquetas</h2>
-            <form id="form-etiqueta" style="display: flex; gap: 8px; margin-bottom: 16px;">
-            <input
-                type="text"
-                id="nombre-etiqueta"
-                placeholder="Nombre de etiqueta"
-                required
-                style="flex: 1;"
-            >
-            <input type="hidden" id="etiqueta-id">
-            <button type="submit">Guardar</button>
-            </form>
-            <table id="tabla-etiquetas" style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr>
-                <th>Nombre</th>
-                <th style="width: 120px;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Aquí cargaremos dinámicamente las filas -->
-            </tbody>
-            </table>
-        </section>
-        <!-- FIN GESTIÓN DE ETIQUETAS -->
-        
+    <!-- ACTIVIDADES RECIENTES: VERSIÓN LISTA -->
+    <section id="seccion-recientes" style="margin-top:40px;width:80%;max-width:800px;">
+      <h3>Hoy:</h3>
+      <div id="filtros-recientes" style="display:flex;gap:10px;margin-bottom:16px;">
+        <select id="filtro-usuario">
+          <option value="">Todos los usuarios</option>
+        </select>
+        <select id="filtro-proyecto">
+          <option value="">Todos los proyectos</option>
+        </select>
+        <select id="filtro-tarea">
+          <option value="">Todas las tareas</option>
+        </select>
+        <select id="filtro-etiqueta">
+          <option value="">Todas las etiquetas</option>
+        </select>
+        <input id="filtro-descripcion" placeholder="Buscar descripción…">
+        <button id="btn-aplicar-filtros">Filtrar</button>
+      </div>
 
-        <section style="margin-top: 40px; width: 80%; max-width: 800px;">
-            <h3>Hoy:</h3>
-            <ul style="width: 100%; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                <li>Actividad reciente 1</li>
-                <li>Actividad reciente 2</li>
-                <li>Actividad reciente 3</li>
-                <li>Actividad reciente 4</li>
-            </ul>
-        </section>
-    </main>
+      <ul id="lista-actividades-recientes"
+          style="width:100%;background:white;padding:20px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+        <!-- Se rellenará desde JS -->
+      </ul>
+    </section>
 
-    <footer>
-        <p>BitáQorA © 2025</p>
-    </footer>
-    <script src="js/header-component.js" defer></script>
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/etiquetas.js"></script>
+  </main>
+  <footer><p>BitáQorA © 2025</p></footer>
 
+  <script src="js/header-component.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/etiquetas.js"></script>
+  <script type="module" src="js/recientes.js"></script>
 </body>
 </html>
-
