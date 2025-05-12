@@ -249,4 +249,41 @@
     margin: 0 2px;
     font-size: .85em;
   }
-  
+/* —— Sidebar —— */
+.sidebar{
+  position: fixed;
+  top: 3.75rem;      /* altura de la topbar */
+  left: 0;
+  bottom: 0;
+  width: 220px;
+  background: #fff;
+  border-right: 2px solid #e0f0f0;
+  padding: 1rem;
+  overflow-y: auto;
+  transition: transform .3s ease;
+  z-index: 900;
+
+  /* CERRADO por defecto */
+  transform: translateX(-100%);
+}
+
+/* ABIERTO cuando tiene la clase */
+.sidebar.visible{
+  transform: translateX(0);
+}
+
+/* —— Contenido principal —— */
+.main-content{
+  margin-left: 0;                 /* sin sangrado por defecto */
+  padding: 1rem;
+  flex: 1;
+  transition: margin-left .3s ease;
+}
+
+/* Sólo desplaza el contenido cuando el menú está abierto
+   (y sólo en pantallas anchas) */
+@media (min-width: 769px){
+  body.sidebar-open .main-content{
+    margin-left: 240px;           /* ≈ ancho de la barra */
+  }
+}

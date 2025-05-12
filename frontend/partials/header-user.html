@@ -1,15 +1,18 @@
+<!-- Partial: Cabecera y menú lateral para usuarios -->
 <header class="topbar">
-    <button id="menu-toggle" class="menu-toggle">☰</button>
-    <h1 class="app-title">BitáQorA — Usuario</h1>
-  </header>
-  <nav id="sidebar" class="sidebar visible">
-    <p class="greeting">👋 <span id="user-name"></span></p>
-    <ul class="menu-list">
-      <li><a href="usuario.html">Inicio</a></li>
-      <li><a href="mis_tareas.html">Mis tareas</a></li>
-      <li><a href="registro_tareas.html">Registrar tarea</a></li>
-      <li><a href="mi_progreso.html">Mi progreso</a></li>
-    </ul>
-    <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
-  </nav>
-  
+  <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú lateral" aria-expanded="false">☰</button>
+  <h1 class="app-title">BitáQorA — Usuario</h1>
+</header>
+
+<nav id="sidebar" class="sidebar" aria-label="Menú principal">
+  <p class="greeting">👋 <span id="user-name"></span></p>
+
+  <ul class="menu-list">
+    <li><a href="usuario.html">Inicio</a></li>
+    <li><a href="mis_tareas.html">Mis tareas</a></li>
+    <li><a href="registro_tareas.html">Registrar tarea</a></li>
+    <li><a href="mi_progreso.html">Mi progreso</a></li>
+  </ul>
+
+  <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+</nav>

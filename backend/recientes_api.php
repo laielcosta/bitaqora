@@ -1,9 +1,9 @@
+
 <?php
 session_start();
 header('Content-Type: application/json; charset=utf-8');
-
 require_once __DIR__ . '/bbdd.php';
-$con = conectar();                         // mysqli
+$con = conectar();
 
 if (!$con) {
     http_response_code(500);
@@ -11,38 +11,63 @@ if (!$con) {
     exit;
 }
 
-/* ---------- recoger filtros ---------- */
+// 1. Obtener tipo de usuario desde sesión
+$tipo = $_SESSION['tipo'] ?? null;
+$id_sesion = $_SESSION['id_usuario'] ?? null;
+
+// 2. Validar y forzar seguridad
+if ($tipo === null || $id_sesion === null) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Sesión no válida']);
+    exit;
+}
+
+// 3. Leer filtros
 $usuario     = $_GET['usuario']     ?? '';
 $proyecto    = $_GET['proyecto']    ?? '';
 $tarea       = $_GET['tarea']       ?? '';
 $etiqueta    = $_GET['etiqueta']    ?? '';
 $descripcion = $_GET['descripcion'] ?? '';
 
-/* ---------- construir WHERE ---------- */
-$w = [];
-if ($usuario   !== '') $w[] = "r.id_usuario = '".mysqli_real_escape_string($con,$usuario)."'";
-if ($proyecto  !== '') $w[] = "r.proyecto   = '".mysqli_real_escape_string($con,$proyecto)."'";
-if ($tarea     !== '') $w[] = "r.tarea      = '".mysqli_real_escape_string($con,$tarea)."'";
-if ($etiqueta  !== '') $w[] = "re.id_etiqueta = '".mysqli_real_escape_string($con,$etiqueta)."'";
-if ($descripcion !== '') {
-    $d = mysqli_real_escape_string($con,$descripcion);
-    $w[] = "r.descripcion LIKE '%$d%'";
+// ⚠️ Si NO es admin (tipo 0), forzar su ID y anular otros
+if ((int)$tipo === 0) {
+    $usuario = $id_sesion;
 }
-$where = $w ? 'WHERE '.implode(' AND ',$w) : '';
 
-/* ---------- consulta principal ---------- */
+// 4. Construir WHERE
+$conds = [];
+if ($usuario !== '') {
+    $conds[] = "r.id_usuario = '" . mysqli_real_escape_string($con, $usuario) . "'";
+}
+if ($proyecto !== '') {
+    $conds[] = "r.proyecto = '" . mysqli_real_escape_string($con, $proyecto) . "'";
+}
+if ($tarea !== '') {
+    $conds[] = "r.tarea = '" . mysqli_real_escape_string($con, $tarea) . "'";
+}
+if ($etiqueta !== '') {
+    $conds[] = "re.id_etiqueta = '" . mysqli_real_escape_string($con, $etiqueta) . "'";
+}
+if ($descripcion !== '') {
+    $d = mysqli_real_escape_string($con, $descripcion);
+    $conds[] = "r.descripcion LIKE '%$d%'";
+}
+
+$where = $conds ? 'WHERE ' . implode(' AND ', $conds) : '';
+
+// 5. Consulta
 $sql = "
     SELECT
-        u.nombre               AS usuario,
-        p.nombre               AS proyecto,
-        t.nombre               AS tarea,
-        r.descripcion          AS descripcion,
-        r.fecha                AS fecha,
-        GROUP_CONCAT(e.nombre) AS etiquetas
+      u.nombre               AS usuario,
+      p.nombre               AS proyecto,
+      t.nombre               AS tarea,
+      r.descripcion          AS descripcion,
+      r.fecha                AS fecha,
+      GROUP_CONCAT(e.nombre) AS etiquetas
     FROM registro r
-    JOIN usuarios  u  ON r.id_usuario = u.id_usuario
-    JOIN proyectos p  ON r.proyecto   = p.id_proyecto
-    JOIN tareas    t  ON r.tarea      = t.id_tarea
+    JOIN usuarios  u ON r.id_usuario  = u.id_usuario
+    JOIN proyectos p ON r.proyecto    = p.id_proyecto
+    JOIN tareas    t ON r.tarea       = t.id_tarea
     LEFT JOIN registro_etiquetas re ON r.id_registro = re.id_registro
     LEFT JOIN etiquetas          e  ON re.id_etiqueta = e.id_etiqueta
     $where
@@ -53,15 +78,15 @@ $sql = "
 $result = mysqli_query($con, $sql);
 if (!$result) {
     http_response_code(500);
-    echo json_encode(['error'=>mysqli_error($con)]);
+    echo json_encode(['error' => mysqli_error($con)]);
     exit;
 }
 
-/* ---------- formatear salida ---------- */
-$out = [];
+// 6. Resultado
+$actividades = [];
 while ($row = mysqli_fetch_assoc($result)) {
-    $tags = $row['etiquetas'] ? array_map('trim', explode(',',$row['etiquetas'])) : [];
-    $out[] = [
+    $tags = $row['etiquetas'] ? array_map('trim', explode(',', $row['etiquetas'])) : [];
+    $actividades[] = [
         'usuario'     => $row['usuario'],
         'proyecto'    => $row['proyecto'],
         'tarea'       => $row['tarea'],
@@ -71,5 +96,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     ];
 }
 
-echo json_encode($out, JSON_UNESCAPED_UNICODE);
+echo json_encode($actividades, JSON_UNESCAPED_UNICODE);
 mysqli_close($con);
+?>

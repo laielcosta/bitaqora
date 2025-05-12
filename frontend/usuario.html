@@ -5,25 +5,29 @@
     <title>BitáQorA - Usuario</title>
     <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body>
+
+<body >
+
     <app-header user-page></app-header>
+
     <main id="contenidoUsuario" style="display: none;">
         <h1>BitáQorA</h1>
         <h2 id="saludoUsuario"></h2>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 80%; max-width: 800px;">
-            <a href="mis_tareas.html"><button>Mis tareas</button></a>
+        <!-- navegación principal del usuario -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;width:80%;max-width:800px;">
             <a href="registro_tareas.html"><button>Registrar nueva tarea</button></a>
-            <a href="mi_progreso.html"><button>Mi progreso</button></a>
+            <a href="estadisticas.html"><button>Mi progreso</button></a>
         </div>
 
-        <section style="margin-top: 40px; width: 80%; max-width: 800px;">
+        <!-- lista de actividades propias -->
+        <section style="margin-top:40px;width:80%;max-width:800px;">
             <h3>Tu actividad:</h3>
-            <ul style="width: 100%; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                <li>Actividad reciente 1</li>
-                <li>Actividad reciente 2</li>
-                <li>Actividad reciente 3</li>
-                <li>Actividad reciente 4</li>
+
+            <!-- ❶ El script recientes.js pintará aquí los <li> -->
+            <ul id="lista-actividades-recientes"
+                style="width:100%;background:white;padding:20px;border-radius:8px;
+                       box-shadow:0 4px 10px rgba(0,0,0,0.1);">
             </ul>
         </section>
     </main>
@@ -31,8 +35,10 @@
     <footer>
         <p>BitáQorA © 2025</p>
     </footer>
+
+    <!-- componentes y lógica reutilizada -->
     <script src="js/header-component.js" defer></script>
     <script type="module" src="js/main.js"></script>
-
+    <script type="module" src="js/recientes.js"></script>
 </body>
 </html>

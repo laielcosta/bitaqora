@@ -1,16 +1,19 @@
+<!-- Partial: Cabecera y menú lateral para administradores -->
 <header class="topbar">
-    <button id="menu-toggle" class="menu-toggle">☰</button>
-    <h1 class="app-title">BitáQorA — Admin</h1>
-  </header>
-  <nav id="sidebar" class="sidebar visible">
-    <p class="greeting">👋 <span id="admin-name"></span></p>
-    <ul class="menu-list">
-      <li><a href="admin.html">Inicio</a></li>
-      <li><a href="ver_actividades.html">Ver actividades</a></li>
-      <li><a href="gestion_proyectos.html">Proyectos</a></li>
-      <li><a href="gestion_usuarios.html">Usuarios</a></li>
-      <li><a href="estadisticas.html">Estadísticas</a></li>
-    </ul>
-    <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
-  </nav>
-  
+  <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú lateral" aria-expanded="false">☰</button>
+  <h1 class="app-title">BitáQorA — Admin</h1>
+</header>
+
+<nav id="sidebar" class="sidebar" aria-label="Menú principal de administración">
+  <p class="greeting">👋 <span id="admin-name"></span></p>
+
+  <ul class="menu-list">
+    <li><a href="admin.html">Inicio</a></li>
+    <li><a href="ver_actividades.html">Ver actividades</a></li>
+    <li><a href="gestion_proyectos.html">Proyectos</a></li>
+    <li><a href="gestion_usuarios.html">Usuarios</a></li>
+    <li><a href="estadisticas.html">Estadísticas</a></li>
+  </ul>
+
+  <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+</nav>

@@ -51,9 +51,10 @@ function rellenar_tabla_usuarios($con) {
     $usuarioss = array(
         array("Miguel", "1234", 1),
         array("Luis", "0000", 0),
-        array("Ana", "4321", 1),
+        array("Ana", "4321", 0),
         array("Carlos", "1111", 0),
-        array("Antonio", "2222", 1)
+        array("Antonio", "2222", 1),
+        array("Alex", "3333", 0)
     );
 
     $resultado = obtener_usuarioss($con);
