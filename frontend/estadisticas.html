@@ -1,109 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>BitáQorA · Estadísticas</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="UTF-8" />
+  <title>BitáQorA · Estadísticas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Hoja global del proyecto -->
-    <link rel="stylesheet" href="css/estilos.css" />
+  <!-- Hoja global -->
+  <link rel="stylesheet" href="css/estilos.css" />
 
-    <!-- —— ESTILOS ESPECÍFICOS —— -->
-    <style>
-      /* barra de filtros */
-      .filtros {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        align-items: center;
-        margin-bottom: 1rem;
-      }
-      .filtros > * {
-        min-height: 32px;
-      }
-      .filtros input[type="date"] {
-        padding: 0.25rem 0.5rem;
-      }
-      .filtros select {
-        padding: 0.25rem 0.5rem;
-      }
-      .filtros label {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-      }
+  <style>
+    /* barra de filtros */
+    .filtros{
+      display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-bottom:1rem
+    }
+    .filtros>*{min-height:32px}
+    .filtros input[type="date"],.filtros select{padding:.25rem .5rem}
+    .filtros label{display:flex;align-items:center;gap:.25rem}
 
-      /* contenedor del lienzo (adaptativo) */
-      .chart-box {
-        width: 100%;
-        max-width: 100%;
-        height: 60vh;
-        background: #fff;
-        border: 1px solid var(--gris-borde, #ddd);
-        border-radius: 4px;
-        padding: 0.5rem;
-      }
+    /* gráfico y tabla */
+    .chart-box{width:100%;height:60vh;background:#fff;border:1px solid #ddd;border-radius:4px;padding:.5rem}
+    .tabla-box table{width:100%;border-collapse:collapse}
+    .tabla-box th,.tabla-box td{padding:.25rem .5rem;border:1px solid #ddd;text-align:left}
+  </style>
+</head>
+<body>
+  <app-header pagina="estadisticas"></app-header>
 
-      /* tabla para categorías */
-      .tabla-box table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .tabla-box th,
-      .tabla-box td {
-        padding: 0.25rem 0.5rem;
-        border: 1px solid #ddd;
-        text-align: left;
-      }
-    </style>
+  <main class="contenido">
+    <section class="tarjeta">
+      <h2 class="tarjeta-titulo">Panel de estadísticas</h2>
 
-    <!-- Lightweight‑Charts (ESM – producción) -->
+      <!-- FILTROS -->
+      <div class="filtros">
+        <input type="date" id="fInicio">
+        <span>–</span>
+        <input type="date" id="fFin">
 
-  </head>
-  <body>
-    <!-- encabezado común que valida sesión y dispara session-ready -->
-    <app-header pagina="estadisticas"></app-header>
+        <!-- Eje X -->
+        <select id="selGroup">
+          <option value="usuario">Usuario</option>
+          <option value="proyecto">Proyecto</option>
+          <option value="tarea" selected>Tarea</option>
+          <option value="etiqueta">Etiqueta</option>
+          <option value="day">Día</option>
+          <option value="month">Mes</option>
+        </select>
 
-    <main class="contenido">
-      <section class="tarjeta">
-        <h2 class="tarjeta-titulo">Panel de estadísticas</h2>
+        <!-- Filtros adicionales -->
+        <select id="fUsuario"><option value="">— Usuario —</option></select>
+        <select id="fProyecto"><option value="">— Proyecto —</option></select>
+        <select id="fTarea"><option value="">— Tarea —</option></select>
+        <select id="fEtiqueta"><option value="">— Etiqueta —</option></select>
 
-        <!-- FILTROS -->
-        <div id="filtros" class="filtros">
-          <input type="date" id="fInicio" />
-          <span>–</span>
-          <input type="date" id="fFin" />
+        <label><input type="checkbox" id="chkLive"> Tiempo real</label>
+        <button id="btnFilter">Filtrar</button>
+      </div>
 
-<select id="selGroup">
-  <option value="usuario">Usuario</option>   <!-- solo visible si admin -->
-  <option value="proyecto">Proyecto</option>
-  <option value="tarea" selected>Tarea</option>
-  <option value="etiqueta">Etiqueta</option>
-  <option value="day">Día</option>
-  <option value="month">Mes</option>
-</select>
+      <!-- GRÁFICA + TABLA -->
+      <div class="chart-box">
+        <div id="grafico" style="width:100%;height:100%"></div>
+        <div id="tablaBox" class="tabla-box"></div>
+      </div>
+    </section>
+  </main>
 
-          <label id="lblLive">
-            <input type="checkbox" id="chkLive" /> Tiempo real
-          </label>
-
-          <button id="btnFilter">Filtrar</button>
-        </div>
-
-        <!-- GRÁFICA + TABLA -->
-        <div class="chart-box">
-          <div id="grafico" style="width: 100%; height: 100%"></div>
-          <div id="tablaBox" class="tabla-box"></div>
-        </div>
-      </section>
-    </main>
-    <!-- SDK standalone -->
-<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.6/dist/lightweight-charts.standalone.production.js?v=506"></script>
-
-
-<!-- stats.js debe ir al final, después de todos los elementos -->
-<script src="js/stats.js"></script>
-    <!-- módulo con la lógica de filtros y gráfico -->
-    <script src="js/header-component.js" defer></script>
-  </body>
+  <!-- Lightweight-Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.6/dist/lightweight-charts.standalone.production.js?v=506"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/header-component.js" defer></script>
+</body>
 </html>
