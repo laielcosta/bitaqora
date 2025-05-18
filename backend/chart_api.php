@@ -19,8 +19,8 @@ $uid  = (int)$_SESSION['id_usuario'];
 $tipo = (int)$_SESSION['tipo'];
 
 $group = $_GET['group'] ?? 'tarea';
-$start = $_GET['start'] ?? date('Y-m-01');
-$end   = $_GET['end']   ?? date('Y-m-d');
+$start = ($_GET['start'] ?? date('Y-m-01')) . ' 00:00:00';
+$end   = ($_GET['end']   ?? date('Y-m-d'))  . ' 00:00:00'; 
 $live  = isset($_GET['live']);
 
 $valid = ['usuario','proyecto','tarea','etiqueta','day','month'];
@@ -48,7 +48,7 @@ if ($live) {
 }
 
 // Rango de fechas
-$where = "fecha BETWEEN '$start' AND '$end'";
+$where = "fecha >= '$start' AND fecha < DATE_ADD('$end', INTERVAL 1 DAY)";
 if ($tipo !== 1) $where .= " AND id_usuario = $uid";
 
 switch ($group) {

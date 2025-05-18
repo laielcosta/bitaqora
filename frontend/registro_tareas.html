@@ -40,12 +40,11 @@
 
 
         <label for="duracion">Duración (cronómetro):</label>
-        <input type="time" name="duracion" id="horas_cronometro">
+        <input type="text" name="duracion" id="horas_cronometro"
+        readonly pattern="\d{2}:\d{2}:\d{2}" placeholder="00:00:00">
 
         <div id="cronometro">00:00:00</div>
-        <button type="button" onclick="iniciarCronometro()">Iniciar</button>
-        <button type="button" onclick="detenerCronometro()">Pausar</button>
-        <button type="button" onclick="reiniciarCronometro()">Reiniciar</button>
+        <button id="btn-crono" type="button" onclick="toggleCronometro()">▶</button>
 
         <label for="comentarios">Comentarios:</label>
         <input type="text" name="comentarios">

@@ -42,25 +42,64 @@ document.getElementById("actividad-form").addEventListener("submit", e => {
 });
 
 // ---------------- Cronómetro -----------------------------
-const timer = new easytimer.Timer();
-const cronometro = document.getElementById("cronometro");
+const timer       = new easytimer.Timer();
+const cronometro  = document.getElementById("cronometro");
+const btnCrono    = document.getElementById("btn-crono");   // <button id="btn-crono">▶</button>
+let   iniciadoAlgunaVez = false;          // ¿ya se arrancó alguna vez?
 
+// Hora actual (HH:MM:SS, 24 h)
+const horaActual = () =>
+    new Date().toLocaleTimeString("es-ES", { hour12:false });
+
+// Actualiza la pantalla y el <input name="duracion">
 timer.addEventListener("secondsUpdated", () => {
     const { hours, minutes, seconds } = timer.getTimeValues();
-    const hh = String(hours).padStart(2, "0");
-    const mm = String(minutes).padStart(2, "0");
-    const ss = String(seconds).padStart(2, "0");
-    cronometro.textContent = `${hh}:${mm}:${ss}`;
+    const hh = String(hours  ).padStart(2,"0");
+    const mm = String(minutes).padStart(2,"0");
+    const ss = String(seconds).padStart(2,"0");
+
+    cronometro.textContent                         = `${hh}:${mm}:${ss}`;
     document.getElementById("horas_cronometro").value = `${hh}:${mm}:${ss}`;
 });
 
-window.iniciarCronometro   = () => timer.start({ precision: "seconds" });
-window.detenerCronometro   = () => timer.pause();
-window.reiniciarCronometro = () => {
-    timer.reset();
-    cronometro.textContent = "00:00:00";
-    document.getElementById("horas_cronometro").value = "00:00:00";
+/**
+ * Un solo botón ▶ / ■
+ * ▶  → arranca o reanuda
+ * ■  → pausa
+ */
+window.toggleCronometro = () => {
+    if (timer.isRunning()) {
+        // ---------- PAUSA ----------
+        timer.pause();
+        document.querySelector('input[name="hora_fin"]').value = horaActual();
+        btnCrono.textContent = "▶";            // icono Play
+        return;
+    }
+
+    // ---------- ARRANQUE / REANUDACIÓN ----------
+    if (!iniciadoAlgunaVez) {                  // primera vez ⇒ reset a 0
+        timer.reset();
+        cronometro.textContent                         = "00:00:00";
+        document.getElementById("horas_cronometro").value = "00:00:00";
+        document.querySelector('input[name="hora_inicio"]').value = horaActual();
+    }
+    timer.start({ precision:"seconds" });      // continúa donde quedó
+    iniciadoAlgunaVez = true;
+    btnCrono.textContent = "■";                // icono Stop
 };
+
+/* (opcional) Llama a esto tras enviar el formulario si quieres
+   reiniciar todo a 0 automáticamente */
+window.resetCronometro = () => {
+    timer.reset();
+    cronometro.textContent                         = "00:00:00";
+    document.getElementById("horas_cronometro").value = "00:00:00";
+    document.querySelector('input[name="hora_inicio"]').value = "";
+    document.querySelector('input[name="hora_fin"]').value    = "";
+    btnCrono.textContent = "▶";
+    iniciadoAlgunaVez = false;
+};
+
 
 // ---------------- CRUD Registros -----------------------------
 function cargarRegistros() {

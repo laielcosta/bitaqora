@@ -2,6 +2,12 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
+
+  const coloresPastel = [
+  '#F28B82', '#FBBC04', '#FFF475', '#CCFF90', '#A7FFEB',
+  '#CBF0F8', '#AECBFA', '#D7AEFB', '#FDCFE8', '#E6C9A8', '#E8EAED'
+];
+
   const ctx = document.getElementById('grafico').getContext('2d');
   let chart = new Chart(ctx, {
     type: 'line',
@@ -84,6 +90,10 @@ if (selGroup.value === 'day' || selGroup.value === 'month') {
   chart.config.type = 'bar';
   chart.data.labels = data.map(r => r.label);
   chart.data.datasets[0].data = data.map(r => r.n);
+if (!chkLive.checked) {
+  chart.data.datasets[0].backgroundColor = coloresPastel.slice(0, data.length);
+  chart.data.datasets[0].borderWidth = 0;
+}
   chart.update();
   renderTable([]);
   return;
@@ -91,9 +101,13 @@ if (selGroup.value === 'day' || selGroup.value === 'month') {
 
 
     // Agrupación categórica: pie chart + tabla
-    chart.config.type = 'pie';
+    chart.config.type = 'doughnut';
     chart.data.labels   = data.map(r => r.label);
     chart.data.datasets[0].data = data.map(r => r.n);
+if (!chkLive.checked) {
+  chart.data.datasets[0].backgroundColor = coloresPastel.slice(0, data.length);
+  chart.data.datasets[0].borderWidth = 0;
+}
     chart.update();
     renderTable(data);
   }
