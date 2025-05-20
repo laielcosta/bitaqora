@@ -3,7 +3,7 @@
 <html lang='es'>
   <head>
     <meta charset='UTF-8' />
-    <title>BitáQorA · Estadísticas Chart.js</title>
+    <title>BitáQorA · Estadísticas</title>
     <meta name='viewport' content='width=device-width, initial-scale=1' />
 
     <link rel='stylesheet' href='css/estilos.css' />
@@ -57,19 +57,19 @@
           <span>–</span>
           <input type='date' id='fFin' />
 
-          <select id='selGroup'>
-            <option value='usuario'>Usuario</option>
-            <option value='proyecto'>Proyecto</option>
-            <option value='tarea' selected>Tarea</option>
-            <option value='etiqueta'>Etiqueta</option>
-            <option value='day'>Día</option>
-            <option value='month'>Mes</option>
+          <select id="fltUsuario"><option value="">Usuario</option></select>
+          <select id="fltProyecto"><option value="">Proyecto</option></select>
+          <select id="fltTarea"><option value="">Tarea</option></select>
+          <select id="fltEtiqueta"><option value="">Etiqueta</option></select>
+          
+          <select id="selGroup">
+            <option value="day">Día</option>
+            <option value="month">Mes</option>
+            <option value="usuario">Usuario</option>
+            <option value="proyecto">Proyecto</option>
+            <option value="tarea">Tarea</option>
+            <option value="etiqueta">Etiqueta</option>
           </select>
-
-          <label id='lblLive'>
-            <input type='checkbox' id='chkLive' /> Tiempo real
-          </label>
-
           <button id='btnFilter'>Filtrar</button>
         </div>
 

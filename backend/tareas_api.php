@@ -41,6 +41,7 @@ switch ($method) {
         responderError(405, "Método no permitido");
 }
 
+
 // ---------------------- FUNCIONES ----------------------
 
 function devolverDatos($con) {
@@ -71,6 +72,12 @@ function devolverDatos($con) {
         $proyectos[] = $row;
     }
     $response['proyectos'] = $proyectos;
+
+    //USUARIOS (solo si eres admin)
+    if (isset($_SESSION['tipo']) && $_SESSION['tipo'] == 1) {
+    $u = mysqli_query($con, "SELECT id_usuario, nombre FROM usuarios");
+    while ($row = mysqli_fetch_assoc($u)) $response['usuarios'][] = $row;
+    }
 
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
     exit();

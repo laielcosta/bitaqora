@@ -159,12 +159,9 @@ function crear_tabla_registro_etiquetas($con) {
 
 // crear tabla proyectos ===========================================================================================================================
 
-/* ============================================================
-   Crea la tabla `proyectos` y rellena datos iniciales **una vez**
-   ============================================================ */
 function crear_tabla_proyecto($con) {
 
-    /* —— 1. crear la tabla si no existe —— */
+
     $sql = "CREATE TABLE IF NOT EXISTS proyectos (
                 id_proyecto   INT PRIMARY KEY AUTO_INCREMENT,
                 nombre        VARCHAR(100)  NOT NULL,
@@ -176,10 +173,10 @@ function crear_tabla_proyecto($con) {
         die('Error al crear tabla proyectos: ' . mysqli_error($con));
     }
 
-    /* —— 2. solo insertar semilla cuando la tabla está vacía —— */
+
     $hayFilas = mysqli_query($con, "SELECT 1 FROM proyectos LIMIT 1");
     if (mysqli_num_rows($hayFilas) === 0) {
-        rellenar_proyectos($con);       // ← función que inserta los proyectos de ejemplo
+        rellenar_proyectos($con);      
     }
 }
 
