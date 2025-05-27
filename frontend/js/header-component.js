@@ -14,6 +14,8 @@ class AppHeader extends HTMLElement {
     const isAdminPage = this.hasAttribute('admin-page');
     const isUserPage  = this.hasAttribute('user-page');
     const tipo = session.tipo; // "1" = admin, "0" = usuario
+    window.tipoUsuario = tipo;
+
 
     // ✅ INYECTAR DATOS AL BODY
     document.body.dataset.role   = tipo;

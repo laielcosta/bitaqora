@@ -1,6 +1,6 @@
 <?php
 // chart_api.php – Devuelve estadísticas agregadas en JSON (mysqli)
-//  revisado 19‑may‑2025
+// Versión 19‑may‑2025 · sin modo live · filtro de etiquetas corregido
 // Agrupaciones válidas: usuario, proyecto, tarea, etiqueta, day, month
 
 header('Content-Type: application/json; charset=utf-8');
@@ -10,9 +10,7 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/bbdd.php';
 session_start();
 
-// ────────────────────────────────
-// 1. Control de sesión
-// ────────────────────────────────
+/* ───────────────────────── 1 · Control de sesión ───────────────────────── */
 if (!isset($_SESSION['id_usuario'])) {
     http_response_code(401);
     echo json_encode(['error' => 'No autenticado']);
@@ -22,13 +20,12 @@ if (!isset($_SESSION['id_usuario'])) {
 $uid  = (int)$_SESSION['id_usuario']; // ID del usuario logeado
 $tipo = (int)$_SESSION['tipo'];       // 1 = admin
 
-// ────────────────────────────────
-// 2. Parámetros de entrada
-// ────────────────────────────────
+/* ───────────────────────── 2 · Parámetros ───────────────────────── */
 $group = $_GET['group'] ?? 'tarea';
 $start = ($_GET['start'] ?? date('Y-m-01')) . ' 00:00:00';
-$end   = ($_GET['end']   ?? date('Y-m-d'))  . ' 00:00:00';
+$end   = ($_GET['end']   ?? date('Y-m-d'))  . ' 23:59:59'; // fin del día completo
 
+// ids() → devuelve array de enteros a partir de clave GET (puede venir con [])
 function ids(string $key): array
 {
     if (!isset($_GET[$key])) return [];
@@ -56,30 +53,34 @@ if (!$con) {
     exit;
 }
 
-// ────────────────────────────────
-// 3. Construir cláusula WHERE en base a filtros
-// ────────────────────────────────
-$where = "r.fecha >= '$start' AND r.fecha < DATE_ADD('$end', INTERVAL 1 DAY)";
+/* ───────────────────────── 3 · Construir WHERE ───────────────────────── */
+$where = "r.fecha BETWEEN '$start' AND '$end'";
 
-// Si no es admin y no filtra por usuario explícitamente → limitar a sí mismo
 if ($tipo !== 1 && empty($idsUsuario)) {
+    // Usuario normal sin filtro explícito → solo sus registros
     $where .= " AND r.id_usuario = $uid";
 }
 
 if ($idsUsuario)  $where .= ' AND r.id_usuario   IN (' . implode(',', $idsUsuario)  . ')';
 if ($idsProyecto) $where .= ' AND r.proyecto     IN (' . implode(',', $idsProyecto) . ')';
 if ($idsTarea)    $where .= ' AND r.tarea        IN (' . implode(',', $idsTarea)    . ')';
+
+// Filtro de etiquetas → 2 variantes (según agrupación)
+$extraEtiqueta = '';
 if ($idsEtiqueta) {
-    $where .= ' AND EXISTS (SELECT 1 FROM registro_etiquetas re
-                            WHERE re.id_registro = r.id_registro
-                              AND re.id_etiqueta IN (' . implode(',', $idsEtiqueta) . '))';
+    if ($group === 'etiqueta') {
+        // limitamos la unión principal para no duplicar otras etiquetas
+        $extraEtiqueta = ' AND re.id_etiqueta IN (' . implode(',', $idsEtiqueta) . ')';
+    } else {
+        // otras agrupaciones: basta con que el registro tenga al menos una de ellas
+        $where .= ' AND EXISTS (SELECT 1 FROM registro_etiquetas ref
+                                WHERE ref.id_registro = r.id_registro
+                                  AND ref.id_etiqueta IN (' . implode(',', $idsEtiqueta) . '))';
+    }
 }
 
-// ────────────────────────────────
-// 4. Consultas de agregación (ya sin modo live)
-//    Se añade la suma de duración (segundos) → campo 'tiempo_seg'
-// ────────────────────────────────
-$selectDuracion = ', SUM(TIME_TO_SEC(r.duracion)) AS tiempo_seg';
+/* ───────────────────────── 4 · Consultas de agregación ───────────────────────── */
+$selectDur = ', SUM(TIME_TO_SEC(r.duracion)) AS tiempo_seg';
 
 switch ($group) {
     case 'usuario':
@@ -88,7 +89,7 @@ switch ($group) {
             echo json_encode(['error' => 'Solo administradores']);
             exit;
         }
-        $sql = "SELECT u.nombre AS label, COUNT(*) AS n$selectDuracion
+        $sql = "SELECT u.nombre AS label, COUNT(*) AS n$selectDur
                 FROM registro r
                 JOIN usuarios u ON u.id_usuario = r.id_usuario
                 WHERE $where
@@ -96,7 +97,7 @@ switch ($group) {
         break;
 
     case 'proyecto':
-        $sql = "SELECT p.nombre AS label, COUNT(*) AS n$selectDuracion
+        $sql = "SELECT p.nombre AS label, COUNT(*) AS n$selectDur
                 FROM registro r
                 JOIN proyectos p ON p.id_proyecto = r.proyecto
                 WHERE $where
@@ -104,7 +105,7 @@ switch ($group) {
         break;
 
     case 'tarea':
-        $sql = "SELECT t.nombre AS label, COUNT(*) AS n$selectDuracion
+        $sql = "SELECT t.nombre AS label, COUNT(*) AS n$selectDur
                 FROM registro r
                 JOIN tareas t ON t.id_tarea = r.tarea
                 WHERE $where
@@ -112,16 +113,16 @@ switch ($group) {
         break;
 
     case 'etiqueta':
-        $sql = "SELECT e.nombre AS label, COUNT(*) AS n$selectDuracion
+        $sql = "SELECT e.nombre AS label, COUNT(*) AS n$selectDur
                 FROM registro r
                 JOIN registro_etiquetas re ON re.id_registro = r.id_registro
                 JOIN etiquetas e ON e.id_etiqueta = re.id_etiqueta
-                WHERE $where
+                WHERE $where$extraEtiqueta
                 GROUP BY e.id_etiqueta";
         break;
 
     case 'day':
-        $sql = "SELECT DATE(r.fecha) AS label, COUNT(*) AS n$selectDuracion
+        $sql = "SELECT DATE(r.fecha) AS label, COUNT(*) AS n$selectDur
                 FROM registro r
                 WHERE $where
                 GROUP BY DATE(r.fecha)
@@ -129,7 +130,7 @@ switch ($group) {
         break;
 
     case 'month':
-        $sql = "SELECT DATE_FORMAT(r.fecha, '%Y-%m') AS label, COUNT(*) AS n$selectDuracion
+        $sql = "SELECT DATE_FORMAT(r.fecha, '%Y-%m') AS label, COUNT(*) AS n$selectDur
                 FROM registro r
                 WHERE $where
                 GROUP BY DATE_FORMAT(r.fecha, '%Y-%m')
@@ -144,12 +145,10 @@ if (!$res) {
     exit;
 }
 
-$datos = [];
-while ($fila = mysqli_fetch_assoc($res)) {
-    $seg = (int)$fila['tiempo_seg'];
-    $fila['tiempo'] = gmdate('H:i:s', $seg);
-    unset($fila['tiempo_seg']);
-    $datos[] = $fila;
+$rows = [];
+while ($row = mysqli_fetch_assoc($res)) {
+    $row['tiempo'] = gmdate('H:i:s', (int)$row['tiempo_seg']);
+    $rows[] = $row;
 }
 
-echo json_encode($datos);
+echo json_encode($rows);
