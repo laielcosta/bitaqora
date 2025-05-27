@@ -29,7 +29,7 @@ $tarea       = $_GET['tarea']       ?? '';
 $etiqueta    = $_GET['etiqueta']    ?? '';
 $descripcion = $_GET['descripcion'] ?? '';
 
-// ⚠️ Si NO es admin (tipo 0), forzar su ID y anular otros
+// Si NO es admin, forzar su id y anular otros
 if ((int)$tipo === 0) {
     $usuario = $id_sesion;
 }

@@ -59,7 +59,7 @@ case 'modificar':
         $stmt->close();
     
         if ($total > 0) {
-            /* devolver 409 + mensaje */
+           
             http_response_code(409);
             echo json_encode([
                 'error'  => 'No se puede eliminar: hay '.$total.' registro(s) asociado(s)'

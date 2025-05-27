@@ -1,7 +1,5 @@
 <?php
-// chart_api.php – Devuelve estadísticas agregadas en JSON (mysqli)
-// Versión 19‑may‑2025 · sin modo live · filtro de etiquetas corregido
-// Agrupaciones válidas: usuario, proyecto, tarea, etiqueta, day, month
+// Devuelve estadísticas agregadas en JSON 
 
 header('Content-Type: application/json; charset=utf-8');
 ini_set('display_errors', 1);
@@ -23,9 +21,9 @@ $tipo = (int)$_SESSION['tipo'];       // 1 = admin
 /* ───────────────────────── 2 · Parámetros ───────────────────────── */
 $group = $_GET['group'] ?? 'tarea';
 $start = ($_GET['start'] ?? date('Y-m-01')) . ' 00:00:00';
-$end   = ($_GET['end']   ?? date('Y-m-d'))  . ' 23:59:59'; // fin del día completo
+$end   = ($_GET['end']   ?? date('Y-m-d'))  . ' 23:59:59'; 
 
-// ids() → devuelve array de enteros a partir de clave GET (puede venir con [])
+// ids() → devuelve array de enteros a partir de clave GET
 function ids(string $key): array
 {
     if (!isset($_GET[$key])) return [];
@@ -57,7 +55,7 @@ if (!$con) {
 $where = "r.fecha BETWEEN '$start' AND '$end'";
 
 if ($tipo !== 1 && empty($idsUsuario)) {
-    // Usuario normal sin filtro explícito → solo sus registros
+    // Usuario normal sin filtro explícito solo sus registros
     $where .= " AND r.id_usuario = $uid";
 }
 
@@ -65,14 +63,14 @@ if ($idsUsuario)  $where .= ' AND r.id_usuario   IN (' . implode(',', $idsUsuari
 if ($idsProyecto) $where .= ' AND r.proyecto     IN (' . implode(',', $idsProyecto) . ')';
 if ($idsTarea)    $where .= ' AND r.tarea        IN (' . implode(',', $idsTarea)    . ')';
 
-// Filtro de etiquetas → 2 variantes (según agrupación)
+// Filtro de etiquetas 
 $extraEtiqueta = '';
 if ($idsEtiqueta) {
     if ($group === 'etiqueta') {
         // limitamos la unión principal para no duplicar otras etiquetas
         $extraEtiqueta = ' AND re.id_etiqueta IN (' . implode(',', $idsEtiqueta) . ')';
     } else {
-        // otras agrupaciones: basta con que el registro tenga al menos una de ellas
+        //  basta con que el registro tenga al menos una de ellas
         $where .= ' AND EXISTS (SELECT 1 FROM registro_etiquetas ref
                                 WHERE ref.id_registro = r.id_registro
                                   AND ref.id_etiqueta IN (' . implode(',', $idsEtiqueta) . '))';

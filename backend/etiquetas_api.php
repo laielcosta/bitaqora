@@ -2,7 +2,7 @@
 // etiquetas_api.php
 // API REST para gestión de etiquetas (backend)
 
-// Mostrar errores en desarrollo
+// mostrar errores en desarrollo
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -18,7 +18,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['tipo'] != 1) {
 header('Content-Type: application/json');
 // Incluir y conectar a la base de datos
 include_once __DIR__ . '/bbdd.php';
-$con = conectar();    // <<< Obtenemos la conexión llamando a la función
+$con = conectar();    
 
 // Permitir métodos HTTP desde el frontend
 if (isset($_SERVER['HTTP_ORIGIN'])) {

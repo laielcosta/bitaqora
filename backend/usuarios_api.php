@@ -3,7 +3,7 @@ require "bbdd.php";
 session_start();
 header('Content-Type: application/json; charset=UTF-8');
 
-/* ─── sólo administrador (tipo = 1) ─── */
+/* ─── sólo administrador ─── */
 if (!isset($_SESSION['usuario']) || $_SESSION['tipo'] != 1) {
     http_response_code(401);
     echo json_encode(['error'=>'No autorizado']);
@@ -43,9 +43,9 @@ switch ($data['accion'] ?? '') {
             echo json_encode(['error'=>'Faltan datos obligatorios']);
             exit;
         }
-        $stmt = $con->prepare(
-            "INSERT INTO usuarios (nombre, pass, tipo)
-             VALUES (?, SHA2(?,256), ?)"
+ $stmt = $con->prepare(
+     "INSERT INTO usuarios (nombre, pass, tipo)
+      VALUES (?, ?, ?)"
         );
         $stmt->bind_param(
             'ssi',
@@ -64,22 +64,22 @@ switch ($data['accion'] ?? '') {
             echo json_encode(['error'=>'Faltan datos obligatorios']);
             exit;
         }
-        // construir UPDATE dinámico según contraseña
+        // construir un update dinámico según contrasena
         $sql = "UPDATE usuarios SET nombre=?, tipo=?";
-        if (!empty($data['clave'])) {
-            $sql .= ", pass=SHA2(?,256)";
+ if (!empty($data['clave'])) {
+     $sql .= ", pass = ?";
         }
         $sql .= " WHERE id_usuario=?";
         $stmt = $con->prepare($sql);
 
         if (!empty($data['clave'])) {
-            $stmt->bind_param(
-                'sssi',
-                $data['nombre'],
-                $data['tipo'],
-                $data['clave'],
-                $data['id_usuario']
-            );
+    $stmt->bind_param(
+        'sisi',
+        $data['nombre'],
+        $data['tipo'],    
+        $data['clave'],
+        $data['id_usuario']
+    );
         } else {
             $stmt->bind_param(
                 'sii',

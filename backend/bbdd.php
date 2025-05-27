@@ -16,7 +16,7 @@ function conectar() {
         die("Error al seleccionar la base de datos 'gestion_actividades': " . mysqli_error($con));
     }
 
-    // Crear tablas (solo la tabla usuarios para la actividades, las demas tablas estan desarrollo) 
+    // Crear tablas
     crear_tabla_usuarios($con);
     crear_tabla_etiquetas($con);
     crear_tabla_proyecto($con);

@@ -108,22 +108,22 @@ function registrarActividad($con) {
         $ini = new DateTime($hora_inicio);
         $fin = new DateTime($hora_fin);
         $diff = $ini->diff($fin);             // DateInterval
-        // formatear como HH:MM:SS  (puede durar >24 h)
+        // formatear como HH:MM
         $duracion = sprintf(
             '%02d:%02d:%02d',
-            $diff->h + $diff->d * 24,         // días → horas
+            $diff->h + $diff->d * 24,         
             $diff->i,
             $diff->s
         );
 }
     $comentarios = $_POST['comentarios'] ?? null;
 
-    // ► Ya no se comprueba $fecha
+
     if (!$tarea || !$proyecto) {
         responderError(400, "Datos incompletos");
     }
 
-    // ► Eliminamos la columna/placeholder de fecha
+
     $sql = "INSERT INTO registro (
                 id_usuario, proyecto, tarea, descripcion,
                 hora_inicio, hora_fin, duracion, comentarios
